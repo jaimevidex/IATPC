@@ -105,37 +105,72 @@ public class Graph {
 	public Node searchSolution(String initLabel, String goalLabel, Algorithms algID) {
 		State init = new State(this.getVertex(initLabel));
 		State goal = new State(this.getVertex(goalLabel));
-		SearchProblem prob = new SearchProblem(init,goal);
+		SearchProblem prob = new SearchProblem(init, goal);
 		SearchAlgorithm alg = null;
-		switch(algID) {
-			case BreadthFirstSearch :
+		switch (algID) {
+			case BreadthFirstSearch:
 				alg = new BreadthFirstSearch(prob);
 				break;
-			case DepthFirstSearch :
+			case DepthFirstSearch:
 				alg = new DepthFirstSearch(prob);
 				break;
-			case UniformCostSearch :
+			case UniformCostSearch:
 				alg = new UniformCostSearch(prob);
 				break;
-			case GreedySearch :
+			case GreedySearch:
 				alg = new GreedySearch(prob);
 				break;
-			case AStarSearch :
+			case AStarSearch:
 				alg = new AStarSearch(prob);
 				break;
-			default :
+			default:
 				System.out.println("This algorithm is not yet implemented!");
 		}
 		Node n = alg.searchSolution();
-		Map<String,Number> m = alg.getMetrics();
-		this.expansions += (long)m.get("Node Expansions");
-		this.generated += (long)m.get("Nodes Generated");
-		this.repeated += (long)m.get("State repetitions");
-		this.time += (double)m.get("Runtime (ms)");
+		Map<String, Number> m = alg.getMetrics();
+		this.expansions += (long) m.get("Node Expansions");
+		this.generated += (long) m.get("Nodes Generated");
+		this.repeated += (long) m.get("State repetitions");
+		this.time += (double) m.get("Runtime (ms)");
 		return n;
 	}
 
 
+	/**
+	 * A
+	 * 	A----B
+	 * 	A----C
+	 *  	P(B/C)
+	 * 	B----F
+	 * 	C----F
+	 * F
+	 */
+
+	public Node searchSolution(String initLabel, String goalLabel, String setLabel, Algorithms algID) {
+		VertexSet set = getVertexSet(setLabel);
+		double bestDistance = Double.MAX_VALUE;
+		Node startNode = null;
+		Node endNode = null;
+
+		for ( Vertex vertex : set.getVertices()) {
+			this.expansions = 0;
+			this.generated = 0;
+			this.repeated = 0;
+			this.time = 0;
+			Node sNode = searchSolution(initLabel, vertex.getLabel(), algID);
+			Node eNode = searchSolution(vertex.getLabel(),goalLabel, algID);
+			double totalDistance = sNode.getPathCost() + eNode.getPathCost();
+			if (totalDistance<bestDistance) {
+				startNode = sNode;
+				endNode = eNode;
+				bestDistance = totalDistance;
+			}
+		}
+
+
+
+		return finalPathNode;
+	}
 
 	public void showSolution(Node n) {
 		System.out.println("******************* SOLUTION ********************");
