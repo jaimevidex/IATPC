@@ -102,6 +102,22 @@ public class Graph {
 		System.out.println("*************************************************");
 	}
 
+	public Node searchSetSolution(String initLabel, String goalLabel, String setLabel, Algorithms algID  ) {
+		Vertex vi = getVertex(initLabel);
+		Vertex vg = getVertex(goalLabel);
+		VertexSet set = getVertexSet(setLabel);
+		Graph g = new Graph();
+		g.addVertex(vi.getLabel(), vi.getLatitude(), vi.getLongitude());
+		g.addVertex(vg.getLabel(), vg.getLatitude(), vg.getLongitude());
+		for (Vertex vertex : set.getVertices()) {
+			g.addVertex(vertex.getLabel(), vertex.getLatitude(), vertex.getLongitude());
+			g.addEdge(initLabel,vertex.getLabel(),searchSolution(initLabel, vertex.getLabel(), algID).getPathCost());
+			g.addEdge(vertex.getLabel(),goalLabel,searchSolution(vertex.getLabel(), goalLabel, algID).getPathCost());
+		}
+		g.showLinks();
+		return g.searchSolution(initLabel,	goalLabel, algID);
+	}
+
 	public Node searchSolution(String initLabel, String goalLabel, Algorithms algID) {
 		State init = new State(this.getVertex(initLabel));
 		State goal = new State(this.getVertex(goalLabel));

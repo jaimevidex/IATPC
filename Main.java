@@ -8,7 +8,7 @@ public class Main {
         graph.showLinks();
         graph.showSets();
         Node n;
-        n = graph.searchSolution("Arad", "Bucharest", "Dobrogea", Algorithms.AStarSearch);
+        n = graph.searchSolution("Arad", "Bucharest", Algorithms.AStarSearch);
         graph.showSolution(n);
     }
 }
