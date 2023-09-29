@@ -102,40 +102,54 @@ public class Graph {
 		System.out.println("*************************************************");
 	}
 
+	public Node searchSetSolution(String initLabel, String goalLabel, String setLabel, Algorithms algID  ) {
+		Vertex vi = getVertex(initLabel);
+		Vertex vg = getVertex(goalLabel);
+		VertexSet set = getVertexSet(setLabel);
+		Graph g = new Graph();
+		g.addVertex(vi.getLabel(), vi.getLatitude(), vi.getLongitude());
+		g.addVertex(vg.getLabel(), vg.getLatitude(), vg.getLongitude());
+		for (Vertex vertex : set.getVertices()) {
+			g.addVertex(vertex.getLabel(), vertex.getLatitude(), vertex.getLongitude());
+			g.addEdge(initLabel,vertex.getLabel(),searchSolution(initLabel, vertex.getLabel(), algID).getPathCost());
+			g.addEdge(vertex.getLabel(),goalLabel,searchSolution(vertex.getLabel(), goalLabel, algID).getPathCost());
+		}
+		g.showLinks();
+		return g.searchSolution(initLabel,	goalLabel, algID);
+	}
+
 	public Node searchSolution(String initLabel, String goalLabel, Algorithms algID) {
 		State init = new State(this.getVertex(initLabel));
 		State goal = new State(this.getVertex(goalLabel));
-		SearchProblem prob = new SearchProblem(init,goal);
+		SearchProblem prob = new SearchProblem(init, goal);
 		SearchAlgorithm alg = null;
-		switch(algID) {
-			case BreadthFirstSearch :
+		switch (algID) {
+			case BreadthFirstSearch:
 				alg = new BreadthFirstSearch(prob);
 				break;
-			case DepthFirstSearch :
+			case DepthFirstSearch:
 				alg = new DepthFirstSearch(prob);
 				break;
-			case UniformCostSearch :
+			case UniformCostSearch:
 				alg = new UniformCostSearch(prob);
 				break;
-			case GreedySearch :
+			case GreedySearch:
 				alg = new GreedySearch(prob);
 				break;
-			case AStarSearch :
+			case AStarSearch:
 				alg = new AStarSearch(prob);
 				break;
-			default :
+			default:
 				System.out.println("This algorithm is not yet implemented!");
 		}
 		Node n = alg.searchSolution();
-		Map<String,Number> m = alg.getMetrics();
-		this.expansions += (long)m.get("Node Expansions");
-		this.generated += (long)m.get("Nodes Generated");
-		this.repeated += (long)m.get("State repetitions");
-		this.time += (double)m.get("Runtime (ms)");
+		Map<String, Number> m = alg.getMetrics();
+		this.expansions += (long) m.get("Node Expansions");
+		this.generated += (long) m.get("Nodes Generated");
+		this.repeated += (long) m.get("State repetitions");
+		this.time += (double) m.get("Runtime (ms)");
 		return n;
 	}
-
-
 
 	public void showSolution(Node n) {
 		System.out.println("******************* SOLUTION ********************");
