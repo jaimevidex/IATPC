@@ -151,43 +151,6 @@ public class Graph {
 		return n;
 	}
 
-
-	/**
-	 * A
-	 * 	A----B
-	 * 	A----C
-	 *  	P(B/C)
-	 * 	B----F
-	 * 	C----F
-	 * F
-	 */
-
-	public Node searchSolution(String initLabel, String goalLabel, String setLabel, Algorithms algID) {
-		VertexSet set = getVertexSet(setLabel);
-		double bestDistance = Double.MAX_VALUE;
-		Node startNode = null;
-		Node endNode = null;
-
-		for ( Vertex vertex : set.getVertices()) {
-			this.expansions = 0;
-			this.generated = 0;
-			this.repeated = 0;
-			this.time = 0;
-			Node sNode = searchSolution(initLabel, vertex.getLabel(), algID);
-			Node eNode = searchSolution(vertex.getLabel(),goalLabel, algID);
-			double totalDistance = sNode.getPathCost() + eNode.getPathCost();
-			if (totalDistance<bestDistance) {
-				startNode = sNode;
-				endNode = eNode;
-				bestDistance = totalDistance;
-			}
-		}
-
-
-
-		return finalPathNode;
-	}
-
 	public void showSolution(Node n) {
 		System.out.println("******************* SOLUTION ********************");
 		System.out.println("Node Expansions: " + this.expansions);
