@@ -8,7 +8,10 @@ public class Main {
         graph.showLinks();
         graph.showSets();
         Node n;
-        n = graph.searchSetSolution("Arad", "Bucharest", "Dobrogea", Algorithms.AStarSearch);
+        String[] labels = new String[2];
+        labels[0] = "Dobrogea";
+        labels[1] = "Banat";
+        n = graph.searchSetSolution("Arad", "Bucharest", labels, Algorithms.AStarSearch);
         graph.showSolution(n);
     }
 }

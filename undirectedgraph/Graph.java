@@ -102,17 +102,30 @@ public class Graph {
 		System.out.println("*************************************************");
 	}
 
-	public Node searchSetSolution(String initLabel, String goalLabel, String setLabel, Algorithms algID  ) {
+	public Node searchSetSolution(String initLabel, String goalLabel, String[] labels, Algorithms algID  ) {
 		Vertex vi = getVertex(initLabel);
 		Vertex vg = getVertex(goalLabel);
-		VertexSet set = getVertexSet(setLabel);
 		Graph g = new Graph();
 		g.addVertex(vi.getLabel(), vi.getLatitude(), vi.getLongitude());
 		g.addVertex(vg.getLabel(), vg.getLatitude(), vg.getLongitude());
-		for (Vertex vertex : set.getVertices()) {
-			g.addVertex(vertex.getLabel(), vertex.getLatitude(), vertex.getLongitude());
-			g.addEdge(initLabel,vertex.getLabel(),searchSolution(initLabel, vertex.getLabel(), algID).getPathCost());
-			g.addEdge(vertex.getLabel(),goalLabel,searchSolution(vertex.getLabel(), goalLabel, algID).getPathCost());
+		VertexSet previousSet = null;
+		for(int i = 0; i < labels.length; i++) {
+			VertexSet set = getVertexSet(labels[i]);
+			for (Vertex vertex : set.getVertices()) {
+				g.addVertex(vertex.getLabel(), vertex.getLatitude(), vertex.getLongitude());
+				if (i == 0) {
+					g.addEdge(initLabel, vertex.getLabel(), searchSolution(initLabel, vertex.getLabel(), algID).getPathCost());
+				}
+				else {
+					for (Vertex previousSetVertex : previousSet.getVertices()) {
+						g.addEdge(previousSetVertex.getLabel(), vertex.getLabel(), searchSolution(previousSetVertex.getLabel(), vertex.getLabel(), algID).getPathCost());
+					}
+					if (i == labels.length -1) {
+						g.addEdge(vertex.getLabel(), goalLabel, searchSolution(vertex.getLabel(), goalLabel, algID).getPathCost());
+					}
+				}
+			}
+			previousSet = set;
 		}
 		g.showLinks();
 		return g.searchSolution(initLabel,	goalLabel, algID);
